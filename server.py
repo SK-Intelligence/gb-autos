@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Tiny dependency-free static server with an index fallback for app routes."""
+import mimetypes
 import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+
+mimetypes.add_type("image/x-icon", ".ico")
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 
 class Handler(SimpleHTTPRequestHandler):
