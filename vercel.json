@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "rewrites": [
     { "source": "/services", "destination": "/index.html" },
     { "source": "/contact", "destination": "/index.html" },
