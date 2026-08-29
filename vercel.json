@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/services", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/blog", "destination": "/index.html" },
+    { "source": "/blog-post", "destination": "/index.html" },
+    { "source": "/blog-post1", "destination": "/index.html" },
+    { "source": "/best-cheap-cars-for-high-reliability", "destination": "/index.html" },
+    { "source": "/all-you-need-to-know-about-tyres", "destination": "/index.html" },
+    { "source": "/blog-post2", "destination": "/index.html" },
+    { "source": "/blog-post3", "destination": "/index.html" }
+  ]
+}
