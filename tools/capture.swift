@@ -240,13 +240,13 @@ private func preparedDocument(siteRoot: URL) throws -> String {
     )
     html = try replacingMatches(
         in: html,
-        pattern: #"<link[^>]+href=[\"']/styles\.css[\"'][^>]*>"#,
+        pattern: #"<link[^>]+href=[\"']/styles\.css(?:\?[^\"']*)?[\"'][^>]*>"#,
         with: "<style>\(css)</style>",
         requiredTag: "the /styles.css link"
     )
     html = try replacingMatches(
         in: html,
-        pattern: #"<script[^>]+src=[\"']/app\.js[\"'][^>]*></script>"#,
+        pattern: #"<script[^>]+src=[\"']/app\.js(?:\?[^\"']*)?[\"'][^>]*></script>"#,
         with: instrumentation + runner,
         requiredTag: "the /app.js script"
     )

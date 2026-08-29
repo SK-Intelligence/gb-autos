@@ -24,29 +24,69 @@ const assets = {
   mapContact: '/assets/web/map-contact.jpg'
 };
 
+const assetDimensions = {
+  [assets.homeHero]: [1920, 1280],
+  [assets.homeRepairs]: [381, 219],
+  [assets.homeServicing]: [381, 219],
+  [assets.homeTyres]: [381, 219],
+  [assets.mario]: [578, 473],
+  [assets.marioService]: [400, 264],
+  [assets.storefront]: [1166, 405],
+  [assets.storefrontWide]: [812, 432],
+  [assets.servicesWorkshop]: [400, 264],
+  [assets.tyreRack]: [400, 264],
+  [assets.tyreServices]: [400, 280],
+  [assets.mechanicalRepairs]: [400, 280],
+  [assets.maintenance]: [400, 280],
+  [assets.galleryEngine]: [812, 432],
+  [assets.galleryFitting]: [400, 432],
+  [assets.galleryMaxxis]: [400, 432],
+  [assets.contactHero]: [1920, 2880],
+  [assets.blogPromo]: [606, 544],
+  [assets.redCar]: [596, 357],
+  [assets.tyreWeights]: [596, 357],
+  [assets.engineOil]: [596, 357],
+  [assets.mapHome]: [578, 367],
+  [assets.mapContact]: [606, 383]
+};
+
 const image = (src, alt, className = '', priority = false) => {
   const classAttribute = className ? ` class="${className}"` : '';
   const loading = priority ? ' loading="eager" fetchpriority="high"' : ' loading="lazy"';
-  return `<img${classAttribute} src="${src}" alt="${alt}"${loading} decoding="async">`;
+  const [width, height] = assetDimensions[src] || [1200, 800];
+  return `<img${classAttribute} src="${src}" alt="${alt}" width="${width}" height="${height}"${loading} decoding="async">`;
 };
+
+const googleMapsPlaceUrl = 'https://www.google.com/maps/search/?api=1&amp;query=GB+Autos+and+Tyres%2C+376+Staines+Road%2C+Feltham+TW14+8BT';
+const googleMapsDirectionsUrl = 'https://www.google.com/maps/dir/?api=1&amp;destination=GB+Autos+and+Tyres%2C+376+Staines+Road%2C+Feltham+TW14+8BT&amp;travelmode=driving';
 
 const map = (fallbackImage) => `
   <div class="map-frame">
     ${image(fallbackImage, '', 'map-fallback')}
     <iframe
       title="Map showing GB Autos and Tyres at 376 Staines Road, Feltham"
-      src="https://www.google.com/maps?q=376+Staines+Rd,+Feltham+TW14+8BT&amp;output=embed"
+      src="https://www.google.com/maps?q=GB+Autos+and+Tyres,+376+Staines+Road,+Feltham+TW14+8BT&amp;output=embed"
       loading="lazy"
+      allowfullscreen
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
+  </div>
+  <div class="map-actions" aria-label="Map actions">
+    <a class="map-action map-action-primary" href="${googleMapsPlaceUrl}" target="_blank" rel="noopener noreferrer">
+      Open in Google Maps <span aria-hidden="true">↗</span>
+    </a>
+    <a class="map-action" href="${googleMapsDirectionsUrl}" target="_blank" rel="noopener noreferrer">
+      Get directions <span aria-hidden="true">→</span>
+    </a>
   </div>`;
 
-const locationSection = ({ heading = 'Location Info', tyreWord = 'durable tyres', hoursLabel = 'Opening Hours' } = {}) => `
+const locationSection = ({ heading = 'Find us in Feltham', tyreWord = 'tyres', hoursLabel = 'Opening hours' } = {}) => `
   <section class="location-section page-section">
     <div class="section-shell location-grid">
       <div class="location-copy">
+        <p class="eyebrow">Visit the workshop</p>
         <h2>${heading}</h2>
-        <p>Visit GB Autos and Tyres for reliable repairs and ${tyreWord} at our convenient Feltham location.</p>
+        <p>Drop in for reliable repairs and ${tyreWord} at our Staines Road garage. We are open seven days a week.</p>
         <dl class="location-details">
           <div>
             <dt>Address</dt>
@@ -54,29 +94,42 @@ const locationSection = ({ heading = 'Location Info', tyreWord = 'durable tyres'
           </div>
           <div>
             <dt>${hoursLabel}</dt>
-            <dd>Opening hours: Monday to Saturday 09:00-18:30 &amp; Sundays 10:00-17:00</dd>
+            <dd>Monday to Saturday 09:00–18:30<br>Sunday 10:00–17:00</dd>
           </div>
         </dl>
+        <div class="location-actions">
+          <a class="button button-secondary" href="${googleMapsDirectionsUrl}" target="_blank" rel="noopener noreferrer">Get directions</a>
+          <a class="text-link" href="tel:02088442156">Call 020 8844 2156 <span aria-hidden="true">→</span></a>
+        </div>
       </div>
-      ${map(heading === 'Contact Us' ? assets.mapContact : assets.mapHome)}
+      <div class="location-map-wrap">
+        <p class="location-coordinate" aria-hidden="true">51.4497° N&nbsp;&nbsp; 0.4183° W</p>
+        ${map(heading === 'Visit our Feltham workshop' ? assets.mapContact : assets.mapHome)}
+      </div>
     </div>
   </section>`;
 
 const homeHighlights = [
   {
+    title: 'Diagnostics & repairs',
+    label: 'Workshop diagnostics',
     image: assets.homeRepairs,
     alt: 'Vehicle diagnostics and repair equipment in a workshop',
     text: 'Expert repairs for all types of vehicle issues, ensuring top performance and safety.'
   },
   {
+    title: 'Servicing & maintenance',
+    label: 'Routine care',
     image: assets.homeServicing,
     alt: 'Tyres and automotive equipment in a service garage',
     text: 'Comprehensive servicing packages to keep your vehicle running smoothly and efficiently.'
   },
   {
+    title: 'Tyres & fitting',
+    label: 'Tyre care',
     image: assets.homeTyres,
     alt: 'GB Autos and Tyres workshop and service bays',
-    text: 'Professional tyre services including fitting, balancing, and alignment for complete optimal performance.'
+    text: 'Professional tyre fitting, balancing and alignment for dependable everyday performance.'
   }
 ];
 
@@ -85,29 +138,59 @@ const home = () => `
     ${image(assets.homeHero, 'Piles of car tyres', 'home-hero-image', true)}
     <div class="home-hero-shade" aria-hidden="true"></div>
     <div class="section-shell home-hero-content">
-      <h1>GB Autos and Tyres: Your All-in-One Destination for Tyres and Mechanical Services</h1>
-      <p>Welcome to GB Autos and Tyres. We're your trusted source for repair and durable tyres. Join our community, explore our extensive range, and discover a journey that truly matters. Here, your road to satisfaction begins. Drive in today.</p>
-      <a class="outline-button light" href="/contact">Contact us</a>
+      <div class="home-hero-copy">
+        <p class="eyebrow">Independent garage · Feltham</p>
+        <h1>Tyres. Repairs. <br><span>Done right.</span></h1>
+        <p>Reliable tyre fitting, servicing and mechanical repairs from a local team that has kept Feltham moving since 2009.</p>
+        <div class="button-group">
+          <a class="button button-primary" href="tel:02088442156">Call 020 8844 2156</a>
+          <a class="button button-ghost-light" href="/services">Explore services</a>
+        </div>
+        <ul class="hero-proof-list" aria-label="Garage highlights">
+          <li><strong>7 days</strong><span>Open every week</span></li>
+          <li><strong>Since 2009</strong><span>Serving local drivers</span></li>
+          <li><strong>Tyres + repairs</strong><span>One trusted garage</span></li>
+        </ul>
+      </div>
     </div>
-    <div class="section-shell home-highlight-grid">
-      ${homeHighlights.map((item) => `
-        <article class="home-highlight">
-          ${image(item.image, item.alt)}
-          <p>${item.text}</p>
-        </article>`).join('')}
+  </section>
+
+  <section class="home-services page-section" aria-labelledby="home-services-heading">
+    <div class="section-shell">
+      <header class="section-intro split-intro">
+        <div>
+          <p class="eyebrow">What we do</p>
+          <h2 id="home-services-heading">Practical help for every mile.</h2>
+        </div>
+        <p>From a fresh set of tyres to fault-finding and routine servicing, our workshop handles the work that keeps your vehicle safe and dependable.</p>
+      </header>
+      <div class="home-highlight-grid">
+        ${homeHighlights.map((item) => `
+          <article class="home-highlight">
+            <div class="home-highlight-media">${image(item.image, item.alt)}</div>
+            <div class="home-highlight-copy">
+              <p class="card-index">${item.label}</p>
+              <h3>${item.title}</h3>
+              <p>${item.text}</p>
+            </div>
+          </article>`).join('')}
+      </div>
+      <a class="text-link section-link" href="/services">See all garage services <span aria-hidden="true">→</span></a>
     </div>
   </section>
 
   <section class="about-section page-section">
     <div class="section-shell split-section">
       <div class="about-copy">
-        <h2>About us</h2>
+        <p class="eyebrow">About GB Autos &amp; Tyres</p>
+        <h2>Your local garage since 2009.</h2>
+        <p class="lead">Based in East Bedfont and open seven days a week, we are more than a tyre shop. We are a full-service garage built around straightforward advice and dependable workmanship.</p>
         <p>GB Autos and Tyres based in East Bedfont, London and established in 2009, is more than just a garage. We're a seven-days-a-week hub, known for delivering high-quality, comprehensive vehicle services.</p>
         <p>Our skilled team provides a broad range of offerings, from tyre replacement and informed advice, to body part repairs, brake servicing, and thorough general maintenance. We're dedicated to ensuring every vehicle that leaves our shop is safe and running smoothly.</p>
-        <p>At GB Autos and Tyres, we're driven by a passion for automotive excellence. We don't just maintain and repair vehicles; we provide peace of mind and keep the community moving. Trust in our commitment to keep you safely on the road, today and in the future.</p>
       </div>
-      <figure class="rounded-media about-media">
+      <figure class="about-media">
         ${image(assets.mario, 'GB Autos and Tyres local business display in Feltham')}
+        <figcaption><span>Local business</span> Proudly serving Feltham and East Bedfont.</figcaption>
       </figure>
     </div>
   </section>
@@ -115,17 +198,22 @@ const home = () => `
   <section class="trusted-section page-section">
     <div class="section-shell">
       <div class="trusted-heading-grid">
-        <h2>Your Trusted Garage</h2>
+        <div>
+          <p class="eyebrow">Real people. Real workshop.</p>
+          <h2>A garage you can come back to.</h2>
+        </div>
         <div class="trusted-summary">
-          <p>At GB Autos and Tyres, we provide reliable mechanical services and durable tyres. Trust us for all your automotive needs in Feltham.</p>
+          <p>We provide reliable mechanical services and durable tyres for local drivers. Clear advice, practical options and a team focused on getting the job done properly.</p>
           <div class="stats" aria-label="Garage statistics">
-            <div class="stat"><strong>250+</strong><span>Quality Service</span></div>
-            <div class="stat"><strong>150+</strong><span>Trusted by Customers</span></div>
+            <div class="stat"><strong>250+</strong><span>Services completed</span></div>
+            <div class="stat"><strong>150+</strong><span>Customers served</span></div>
+            <div class="stat"><strong>7 days</strong><span>Open each week</span></div>
           </div>
         </div>
       </div>
-      <figure class="rounded-media trusted-media">
+      <figure class="trusted-media">
         ${image(assets.storefront, 'GB Autos and Tyres garage and tyre bay on Staines Road')}
+        <figcaption>376 Staines Road, Feltham</figcaption>
       </figure>
     </div>
   </section>
@@ -134,20 +222,23 @@ const home = () => `
 
 const serviceFeatures = [
   {
+    label: 'Mechanical',
     title: 'Expert Mechanical Services',
     text: 'Our skilled technicians offer comprehensive mechanical services to keep your vehicle running smoothly.',
     image: assets.servicesWorkshop,
     alt: 'Spacious automotive repair shop with vehicles and blue lifts'
   },
   {
+    label: 'Tyres',
     title: 'Durable Tyre Options',
     text: 'Choose from a wide range of durable tyres designed for performance and longevity.',
     image: assets.marioService,
     alt: 'GB Autos and Tyres local business display in Feltham'
   },
   {
-    title: 'Lasting reliability.',
-    text: 'Trustworthy Repairs and Maintenance',
+    label: 'Fitting',
+    title: 'Tyres for every budget',
+    text: 'Straightforward advice, professional fitting and dependable options for your vehicle and driving needs.',
     image: assets.tyreRack,
     alt: 'Tyres displayed above an Express Tyre Shop sign'
   }
@@ -155,18 +246,21 @@ const serviceFeatures = [
 
 const serviceCards = [
   {
+    label: 'Tyre care',
     title: 'Tyre Services',
     text: 'We provide a wide range of durable tyres suitable for all vehicles and driving conditions.',
     image: assets.tyreServices,
     alt: 'Motorcycle and tyres outside a small repair workshop'
   },
   {
+    label: 'Mechanical',
     title: 'Mechanical Repairs',
     text: "Trust our skilled technicians for reliable mechanical repairs to ensure your vehicle's optimal performance.",
     image: assets.mechanicalRepairs,
     alt: 'Vehicles and equipment inside an automotive repair garage'
   },
   {
+    label: 'Maintenance',
     title: 'Maintenance Services',
     text: 'Visit us for comprehensive vehicle maintenance and repair services tailored to your needs.',
     image: assets.maintenance,
@@ -177,15 +271,22 @@ const serviceCards = [
 const services = () => `
   <section class="services-hero page-section">
     <div class="section-shell">
-      <header class="section-heading light-heading">
-        <h1>Quality Tyre Services</h1>
-        <p>We provide reliable tyre repairs and replacements for your vehicle's optimal performance and safety.</p>
+      <header class="services-intro">
+        <div>
+          <p class="eyebrow">Tyres &amp; mechanical work</p>
+          <h1>The workshop for the whole vehicle.</h1>
+        </div>
+        <div class="services-intro-copy">
+          <p>From tyre repairs and replacement to servicing, diagnostics and mechanical work, we help keep your vehicle safe, smooth and ready for the road.</p>
+          <a class="button button-primary" href="/contact">Ask about a service</a>
+        </div>
       </header>
       <div class="service-feature-grid">
         ${serviceFeatures.map((item) => `
           <article class="service-feature-card">
-            ${image(item.image, item.alt)}
+            <div class="service-feature-media">${image(item.image, item.alt)}</div>
             <div class="service-feature-copy">
+              <p class="card-index">${item.label}</p>
               <h2>${item.title}</h2>
               <p>${item.text}</p>
             </div>
@@ -196,16 +297,23 @@ const services = () => `
 
   <section class="services-list-section page-section">
     <div class="section-shell">
-      <header class="section-heading">
-        <h2>Our Services</h2>
-        <p>Expert tyre fitting and mechanical services to keep your vehicle running smoothly and safely.</p>
+      <header class="section-intro split-intro">
+        <div>
+          <p class="eyebrow">Core services</p>
+          <h2>Everything your car needs. Nothing it doesn’t.</h2>
+        </div>
+        <p>Expert tyre fitting and mechanical services delivered with clear advice and a practical approach.</p>
       </header>
       <div class="service-card-grid">
         ${serviceCards.map((item) => `
           <article class="service-card">
-            ${image(item.image, item.alt)}
-            <h3>${item.title}</h3>
-            <p>${item.text}</p>
+            <div class="service-card-media">${image(item.image, item.alt)}</div>
+            <div class="service-card-copy">
+              <p class="card-index">${item.label}</p>
+              <h3>${item.title}</h3>
+              <p>${item.text}</p>
+              <a class="text-link" href="/contact">Ask about this service <span aria-hidden="true">→</span></a>
+            </div>
           </article>`).join('')}
       </div>
     </div>
@@ -213,9 +321,10 @@ const services = () => `
 
   <section class="services-gallery page-section">
     <div class="section-shell">
-      <header class="section-heading">
-        <h2>Tyres Gallery</h2>
-        <p>Explore our range of durable tyres and mechanical services offered.</p>
+      <header class="section-intro gallery-intro">
+        <p class="eyebrow">Inside the garage</p>
+        <h2>Work you can see.</h2>
+        <p>A look at our Feltham workshop, tyre fitting and mechanical services.</p>
       </header>
       <div class="gallery-grid">
         ${image(assets.galleryEngine, 'Close-up of a red vehicle engine bay', 'gallery-wide')}
@@ -232,29 +341,42 @@ const contact = () => `
     <div class="contact-hero-shade" aria-hidden="true"></div>
     <div class="section-shell contact-hero-content">
       <header class="contact-intro">
-        <h1>Contact Us</h1>
-        <p>Get in touch with our expert team for all your vehicle repair, servicing and tyre needs. Fill out the form below and make sure to include your email so we can get back you as soon as possible. Be sure to check your spam email if you can't see the response in your inbox.</p>
-        <p>Or simply just call us at <a href="tel:02088442156">020 8844 2156!</a></p>
+        <p class="eyebrow">Get in touch</p>
+        <h1>Let’s get you back on the road.</h1>
+        <p>Tell us what your vehicle needs and our Feltham team will get back to you. For the quickest answer during opening hours, call the garage directly.</p>
+        <a class="contact-phone" href="tel:02088442156">
+          <span>Call the garage</span>
+          <strong>020 8844 2156</strong>
+        </a>
+        <dl class="contact-quick-facts">
+          <div><dt>Mon–Sat</dt><dd>09:00–18:30</dd></div>
+          <div><dt>Sunday</dt><dd>10:00–17:00</dd></div>
+        </dl>
       </header>
       <form class="contact-form" data-form="contact">
-        <div class="field">
-          <label for="first-name">Enter your first name</label>
-          <input id="first-name" name="name" autocomplete="given-name" placeholder="Your first name here">
+        <div class="form-heading">
+          <p class="eyebrow">Send an enquiry</p>
+          <h2>What can we help with?</h2>
+          <p>Include a few details and your email address so we can reply.</p>
         </div>
         <div class="field">
-          <label for="contact-email">Enter your email address*</label>
-          <input id="contact-email" name="email" type="email" autocomplete="email" placeholder="Your email address here" required>
+          <label for="first-name">First name <span>(optional)</span></label>
+          <input id="first-name" name="name" autocomplete="given-name" placeholder="e.g. Alex…">
         </div>
         <div class="field">
-          <label for="message">Share your message or query*</label>
-          <textarea id="message" name="message" placeholder="Your message here" required></textarea>
+          <label for="contact-email">Email address <span>(required)</span></label>
+          <input id="contact-email" name="email" type="email" autocomplete="email" spellcheck="false" placeholder="e.g. you@example.com…" required>
         </div>
-        <button class="contact-submit" type="submit">Send</button>
+        <div class="field">
+          <label for="message">Message <span>(required)</span></label>
+          <textarea id="message" name="message" placeholder="e.g. Ford Fiesta with a brake noise…" required></textarea>
+        </div>
+        <button class="button button-primary contact-submit" type="submit">Send enquiry <span aria-hidden="true">→</span></button>
       </form>
     </div>
   </section>
 
-  ${locationSection({ heading: 'Contact Us', tyreWord: 'quality tyres', hoursLabel: 'Hours' })}`;
+  ${locationSection({ heading: 'Visit our Feltham workshop', tyreWord: 'tyres and mechanical work', hoursLabel: 'Opening hours' })}`;
 
 const posts = [
   {
@@ -292,14 +414,28 @@ const posts = [
 ];
 
 const blog = () => `
+  <section class="blog-hero page-section">
+    <div class="section-shell blog-hero-grid">
+      <div>
+        <p class="eyebrow">Garage notes</p>
+        <h1>Useful advice for the road ahead.</h1>
+      </div>
+      <p>Plain-English guides on tyres, maintenance and choosing a reliable vehicle—written to help local drivers make informed decisions.</p>
+    </div>
+  </section>
+
   <section class="blog-list page-section">
     <div class="section-shell blog-grid">
-      ${posts.map((post) => `
+      ${posts.map((post, index) => `
         <article class="blog-card">
           <a class="blog-card-link" href="${post.href}">
-            ${image(post.image, post.alt)}
-            <h2>${post.title}</h2>
-            <p class="blog-card-meta"><time datetime="2025-06-07">${post.date}</time><span aria-hidden="true">·</span>${post.readTime}</p>
+            <div class="blog-card-media">${image(post.image, post.alt)}</div>
+            <div class="blog-card-copy">
+              <p class="card-index">${index === 1 ? 'Tyre guide' : 'Driver guide'}</p>
+              <h2>${post.title}</h2>
+              <p class="blog-card-meta"><time datetime="2025-06-07">${post.date}</time><span aria-hidden="true">·</span>${post.readTime}</p>
+              <span class="blog-card-arrow" aria-hidden="true">↗</span>
+            </div>
           </a>
         </article>`).join('')}
     </div>
@@ -308,11 +444,15 @@ const blog = () => `
   <section class="blog-cta page-section">
     <div class="section-shell blog-cta-grid">
       <div class="blog-cta-copy">
-        <h1>Your Trusted Garage<br>for Tyres &amp; Repairs</h1>
-        <p>At GB Autos and Tyres, we provide reliable mechanical services and durable tyres, ensuring your vehicle runs smoothly. Visit us for all your automotive needs in Feltham.</p>
-        <a class="outline-button" href="/contact">Contact</a>
+        <p class="eyebrow">Need more than advice?</p>
+        <h2>Bring it to the garage.</h2>
+        <p>We provide reliable mechanical services and durable tyres for vehicles across Feltham. Tell us what is happening and we will help you plan the next step.</p>
+        <div class="button-group">
+          <a class="button button-primary" href="tel:02088442156">Call the garage</a>
+          <a class="button button-ghost-light" href="/contact">Send an enquiry</a>
+        </div>
       </div>
-      <figure class="rounded-media blog-cta-media">
+      <figure class="blog-cta-media">
         ${image(assets.blogPromo, 'A technician working on a small vehicle tyre in a workshop')}
       </figure>
     </div>
@@ -517,13 +657,24 @@ const article = (post, sections) => `
   <article class="article-page page-section">
     <div class="article-shell">
       <header class="article-header">
+        <a class="article-back" href="/blog"><span aria-hidden="true">←</span> All garage notes</a>
+        <p class="eyebrow">Driver guide</p>
         <h1>${post.title}</h1>
-        <p class="article-meta"><time datetime="2025-06-07">${post.date}</time><span>${post.readTime}</span></p>
+        <p class="article-meta"><span>GB Autos &amp; Tyres</span><time datetime="2025-06-07">${post.date}</time><span>${post.readTime}</span></p>
       </header>
       <figure class="article-hero-media">
         ${image(post.image, post.alt, '', true)}
       </figure>
-      <div class="article-content">${renderArticleSections(sections)}</div>
+      <div class="article-layout">
+        <div class="article-content">${renderArticleSections(sections)}</div>
+        <aside class="article-aside" aria-label="Contact the garage">
+          <p class="eyebrow">Need practical help?</p>
+          <h2>Talk to the workshop.</h2>
+          <p>For tyres, servicing or a vehicle concern, speak directly with our Feltham team.</p>
+          <a class="button button-primary" href="tel:02088442156">020 8844 2156</a>
+          <a class="text-link" href="/contact">Send an enquiry <span aria-hidden="true">→</span></a>
+        </aside>
+      </div>
     </div>
   </article>`;
 
@@ -539,8 +690,8 @@ const notFound = () => `
     <div class="section-shell">
       <p class="error-code">404</p>
       <h1>Page not found</h1>
-      <p>The page you requested does not exist.</p>
-      <a class="outline-button" href="/">Go home</a>
+      <p>That route has taken a wrong turn. Head back to the garage homepage.</p>
+      <a class="button button-primary" href="/">Back to home</a>
     </div>
   </section>`;
 
@@ -577,6 +728,7 @@ const titles = {
 const app = document.querySelector('#app');
 app.innerHTML = (pages[route] || notFound)();
 document.title = titles[route] || 'Page Not Found | GB Autos and Tyres';
+document.querySelector('#year').textContent = String(new Date().getFullYear());
 
 const blogRoutes = new Set(['/blog', ...Object.keys(articlePages)]);
 document.querySelectorAll('.nav a').forEach((link) => {
