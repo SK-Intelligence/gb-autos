@@ -9,3 +9,4 @@ __pycache__/
 CODEX-HUD.md
 .omc/
 artifacts/
+.vercel
